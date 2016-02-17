@@ -3,7 +3,7 @@
 var router = require('express').Router();
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
-var f73cc3b61f22c79019ca1e79f801e0d0650e40d3 = require('keys.js').github
+var f73cc3b61f22c79019ca1e79f801e0d0650e40d3 = require('./keys.js').github
 var User = require('../api/users/user.model');
 
 router.get('/', passport.authenticate('github'));
