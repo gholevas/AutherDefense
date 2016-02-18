@@ -71,7 +71,7 @@ router.put('/:id',isAdmin, function (req, res, next) {
 	.then(null, next);
 });
 
-router.delete('/:id',deleteSelf, function (req, res, next) {
+router.delete('/:id',isAdmin, function (req, res, next) {
 	req.requestedUser.remove()
 	.then(function () {
 		res.status(204).end();
