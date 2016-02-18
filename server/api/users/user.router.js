@@ -7,7 +7,8 @@ var HttpError = require('../../utils/HttpError');
 var User = require('./user.model');
 
 var isAdmin = function (req, res, next) {
-	console.log('the req author!!!!!!!!!!!!',req.body._id)
+	console.log('the req passport user!!!!!!!!!!!!',req.session.passport.user)
+	console.log('the req id!!!!!!!!!!!!',req.user._id)
 	// console.log('the req user!!!!!!!!!!!!',req.user._id)
     if ((req.isAuthenticated() && req.user.isAdmin)||req.body._id == req.user._id) {
         next();
@@ -15,6 +16,15 @@ var isAdmin = function (req, res, next) {
         res.status(401).end();
     }
 };
+
+var deleteSelf = function (req, res, next) {
+    if ((req.isAuthenticated() && req.user.isAdmin)||req.session.passport.user == req.user._id) {
+        next();
+    } else {
+        res.status(401).end();
+    }
+};
+
 
 router.param('id', function (req, res, next, id) {
 	User.findById(id).exec()
@@ -61,7 +71,7 @@ router.put('/:id',isAdmin, function (req, res, next) {
 	.then(null, next);
 });
 
-router.delete('/:id',isAdmin, function (req, res, next) {
+router.delete('/:id',deleteSelf, function (req, res, next) {
 	req.requestedUser.remove()
 	.then(function () {
 		res.status(204).end();
