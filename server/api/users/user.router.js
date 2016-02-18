@@ -6,6 +6,16 @@ var router = require('express').Router(),
 var HttpError = require('../../utils/HttpError');
 var User = require('./user.model');
 
+var isAdmin = function (req, res, next) {
+	console.log('the req author!!!!!!!!!!!!',req.body._id)
+	// console.log('the req user!!!!!!!!!!!!',req.user._id)
+    if ((req.isAuthenticated() && req.user.isAdmin)||req.body._id == req.user._id) {
+        next();
+    } else {
+        res.status(401).end();
+    }
+};
+
 router.param('id', function (req, res, next, id) {
 	User.findById(id).exec()
 	.then(function (user) {
@@ -42,7 +52,7 @@ router.get('/:id', function (req, res, next) {
 	.then(null, next);
 });
 
-router.put('/:id', function (req, res, next) {
+router.put('/:id',isAdmin, function (req, res, next) {
 	_.extend(req.requestedUser, req.body);
 	req.requestedUser.save()
 	.then(function (user) {
@@ -51,7 +61,7 @@ router.put('/:id', function (req, res, next) {
 	.then(null, next);
 });
 
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id',isAdmin, function (req, res, next) {
 	req.requestedUser.remove()
 	.then(function () {
 		res.status(204).end();
