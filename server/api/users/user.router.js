@@ -44,7 +44,7 @@ router.get('/', function (req, res, next) {
 	.then(null, next);
 });
 
-router.post('/', function (req, res, next) {
+router.post('/',isAdmin, function (req, res, next) {
 	User.create(req.body)
 	.then(function (user) {
 		res.status(201).json(user);
